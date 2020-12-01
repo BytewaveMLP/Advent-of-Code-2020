@@ -2,6 +2,9 @@
 end_of_line = lf
 insert_final_newline = true
 
+[input.txt]
+insert_final_newline = false
+
 [*.py]
 indent_style = tab
 charset = utf-8
