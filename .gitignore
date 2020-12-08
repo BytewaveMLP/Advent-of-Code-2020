@@ -1,4 +1,4 @@
-input.txt
+*input.txt
 /.env
 __pycache__/
 /.vscode/settings.json
