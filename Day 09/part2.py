@@ -9,6 +9,7 @@ def two_sum(arr, n):
 	for a in arr:
 		if a > n: continue
 		for b in arr:
+			if a == b: continue
 			if a + b == n:
 				return a, b
 
