@@ -1,9 +1,8 @@
 import sys
 import re
-from collections import defaultdict
 input_lines = open(sys.argv[1]).read().split('\n')[:-1]
 
-mem = defaultdict(lambda _: 0)
+mem = {}
 mem_assign_exp = re.compile(r'^mem\[(\d+)\] = (\d+)$')
 
 mask = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
