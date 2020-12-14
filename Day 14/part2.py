@@ -3,7 +3,7 @@ import re
 from collections import defaultdict
 input_lines = open(sys.argv[1]).read().split('\n')[:-1]
 
-mem = defaultdict(lambda n: 0)
+mem = defaultdict(lambda _: 0)
 mem_assign_exp = re.compile(r'^mem\[(\d+)\] = (\d+)$')
 
 mask = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
@@ -36,10 +36,4 @@ for line in input_lines:
 		addr_copy = int(''.join(addr_copy), base=2)
 		mem[addr_copy] = val
 
-print(mem)
-
-_sum = 0
-for k in mem:
-	_sum += mem[k]
-
-print('SUM =', _sum)
+print('SUM =', sum(mem.values()))
