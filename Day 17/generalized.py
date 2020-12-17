@@ -3,11 +3,12 @@ import copy
 import itertools
 import operator
 
-if not (2 <= len(sys.argv) <= 3):
-	print(f'usage: {sys.argv[0]} <input.txt> [<dimensions>]')
+if not (2 <= len(sys.argv) <= 4):
+	print(f'usage: {sys.argv[0]} <input.txt> [<dimensions>] [<iterations>]')
 	exit(1)
 
 DIMENSIONS = int(sys.argv[2] if len(sys.argv) > 2 else 3)
+ITERATIONS = int(sys.argv[3] if len(sys.argv) > 3 else 6)
 NEIGHBOR_OFFSETS = list(itertools.product([-1, 0, 1], repeat=DIMENSIONS))
 
 addpos = lambda x, y: tuple(map(operator.add, x, y))
@@ -50,9 +51,11 @@ def iterate(grid):
 print('INITIAL STATE:')
 print(grid)
 
-for i in range(6):
+for i in range(ITERATIONS):
 	grid = iterate(grid)
 	print(f'ITERATION {i+1}:')
 	print(grid)
 
-print(len(grid))
+print()
+print('SIMULATION STOP.')
+print(f'LIVE AT END: {len(grid)}')
