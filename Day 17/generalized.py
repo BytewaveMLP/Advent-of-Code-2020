@@ -6,6 +6,7 @@ from typing import *
 
 if not (2 <= len(sys.argv) <= 4):
 	print(f'usage: {sys.argv[0]} <input.txt> [<dimensions>] [<iterations>]', file=sys.stderr)
+	print('if input file is "-", reads stdin')
 	exit(1)
 
 Point = Tuple[int, ...]
@@ -24,7 +25,13 @@ NEIGHBOR_OFFSETS = list(itertools.product([-1, 0, 1], repeat=DIMENSIONS))
 
 addpos = lambda x, y: tuple(map(operator.add, x, y))
 
-input_lines = [line for line in open(sys.argv[1]).read().split('\n') if line != '']
+input_file = None
+if sys.argv[1] == '-':
+	input_file = sys.stdin
+else:
+	input_file = open(sys.argv[1])
+
+input_lines = [line for line in input_file.read().split('\n') if line != '']
 grid = set()
 for y, line in enumerate(input_lines):
 	for x, c in enumerate(input_lines[y]):
