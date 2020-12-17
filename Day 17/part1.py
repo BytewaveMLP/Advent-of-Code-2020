@@ -48,13 +48,11 @@ def revive(grid, coord):
 	return revives
 
 def iterate(grid):
-	to_add = set()
 	grid_copy = copy.deepcopy(grid)
 	for coord in grid:
 		if kill(grid, coord):
 			grid_copy.remove(coord)
-		to_add |= revive(grid, coord)
-	[ grid_copy.add(coord) for coord in to_add ]
+		grid_copy |= revive(grid, coord)
 	return grid_copy
 
 print('INITIAL STATE:')
