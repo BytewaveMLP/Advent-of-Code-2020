@@ -8,6 +8,7 @@ if not (2 <= len(sys.argv) <= 3):
 	exit(1)
 
 DIMENSIONS = int(sys.argv[2] if len(sys.argv) > 2 else 3)
+NEIGHBOR_OFFSETS = list(itertools.product([-1, 0, 1], repeat=DIMENSIONS))
 
 addpos = lambda x, y: tuple(map(operator.add, x, y))
 
@@ -18,32 +19,20 @@ for y, line in enumerate(input_lines):
 		if c == '#':
 			grid.add(tuple([x, y] + [0] * (DIMENSIONS - 2)))
 
+def live_around(grid, coord):
+	return sum(1 for neighbor_offset in NEIGHBOR_OFFSETS if addpos(coord, neighbor_offset) in grid)
+
 def kill(grid, coord):
-	active_count = 0
-
-	for offset in itertools.product([-1, 0, 1], repeat=DIMENSIONS):
-		if all(o == 0 for o in offset): continue
-		neighbor = addpos(coord, offset)
-		if neighbor in grid:
-			active_count += 1
-
-	return not 2 <= active_count <= 3
+	active_count = live_around(grid, coord)
+	return not 3 <= active_count <= 4
 
 def revive(grid, coord):
 	revives = set()
 
-	for offset in itertools.product([-1, 0, 1], repeat=DIMENSIONS):
-		if all(o == 0 for o in offset): continue
-		active_count = 1
+	for offset in NEIGHBOR_OFFSETS:
 		possible_revive = addpos(coord, offset)
-
-		for offset2 in itertools.product([-1, 0, 1], repeat=DIMENSIONS):
-			if all(o == 0 for o in offset2): continue
-			neighbor = addpos(possible_revive, offset2)
-			if neighbor == coord: continue
-
-			if neighbor in grid:
-				active_count += 1
+		if possible_revive in grid: continue
+		active_count = live_around(grid, possible_revive)
 
 		if active_count == 3:
 			revives.add(possible_revive)
@@ -63,7 +52,7 @@ print(grid)
 
 for i in range(6):
 	grid = iterate(grid)
-	print(f'ITERATION {i}:')
+	print(f'ITERATION {i+1}:')
 	print(grid)
 
 print(len(grid))
