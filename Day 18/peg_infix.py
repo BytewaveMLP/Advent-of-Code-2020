@@ -7,24 +7,24 @@ input_lines = [line for line in open(sys.argv[1]).read().split('\n') if line != 
 
 num = pp.pyparsing_common.integer
 
-def p1_eval_math(tokens):
+OPS = {
+	'+': operator.add,
+	'*': operator.mul,
+}
+def eval_math(tokens):
 	tokens = tokens[0]
 	ret = tokens[0]
 	for op, n in zip(tokens[1::2], tokens[2::2]):
-		if op == '*': ret *= n
-		elif op == '+': ret += n
+		ret = OPS[op](ret, n)
 	return ret
 
 p1_expr = pp.infixNotation(num, [
-	(pp.oneOf('+ *'), 2, pp.opAssoc.LEFT, p1_eval_math)
+	(pp.oneOf('+ *'), 2, pp.opAssoc.LEFT, eval_math)
 ])
 
-add_all = functools.partial(functools.reduce, operator.add)
-mul_all = functools.partial(functools.reduce, operator.mul)
-
 p2_expr = pp.infixNotation(num, [
-	(pp.Literal('+'), 2, pp.opAssoc.LEFT, lambda a: add_all(a[0][::2])),
-	(pp.Literal('*'), 2, pp.opAssoc.LEFT, lambda a: mul_all(a[0][::2])),
+	(pp.Literal('+'), 2, pp.opAssoc.LEFT, eval_math),
+	(pp.Literal('*'), 2, pp.opAssoc.LEFT, eval_math),
 ])
 
 p1 = 0

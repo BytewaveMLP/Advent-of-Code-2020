@@ -7,30 +7,25 @@ input_lines = [line for line in open(sys.argv[1]).read().split('\n') if line != 
 
 num = pp.pyparsing_common.integer
 
-def p1_eval_math(s, locs, tokens):
+OPS = {
+	'+': operator.add,
+	'*': operator.mul,
+}
+def eval_math(tokens):
 	ret = tokens[0]
 	for op, n in zip(tokens[1::2], tokens[2::2]):
-		if op == '*':
-			ret *= n
-		elif op == '+':
-			ret += n
+		ret = OPS[op](ret, n)
 	return ret
 
 p1_expr      = pp.Forward()
 p1_operator  = pp.oneOf('+ *')
-p1_math_expr = (p1_expr + pp.ZeroOrMore(p1_operator + p1_expr)).setParseAction(p1_eval_math)
+p1_math_expr = (p1_expr + pp.ZeroOrMore(p1_operator + p1_expr)).setParseAction(eval_math)
 p1_expr    <<= (pp.Suppress('(') + p1_math_expr + pp.Suppress(')')) | num
-
-def p2_eval_add(s, locs, tokens):
-	return functools.reduce(operator.add, tokens[::2])
-
-def p2_eval_mul(s, locs, tokens):
-	return functools.reduce(operator.mul, tokens[::2], 1)
 
 p2_expr   = pp.Forward()
 p2_add    = pp.Forward()
-p2_mul    = (p2_add + pp.ZeroOrMore(pp.Literal('*') + p2_add)).setParseAction(p2_eval_mul)
-p2_add  <<= (p2_expr + pp.ZeroOrMore(pp.Literal('+') + p2_expr)).setParseAction(p2_eval_add)
+p2_mul    = (p2_add + pp.ZeroOrMore(pp.Literal('*') + p2_add)).setParseAction(eval_math)
+p2_add  <<= (p2_expr + pp.ZeroOrMore(pp.Literal('+') + p2_expr)).setParseAction(eval_math)
 p2_expr <<= (pp.Suppress('(') + p2_mul + pp.Suppress(')')) | num
 
 results = []
